@@ -19,8 +19,7 @@
 				"[json]": {
 					"editor.formatOnSave": true
 				},            
-      "workbench.iconTheme": "material-icon-theme",
-				"azurite.location": "_azurite"        
+      "workbench.iconTheme": "material-icon-theme"        
       },
       "extensions": [
 				"esbenp.prettier-vscode",        

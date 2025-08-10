@@ -1,14 +1,16 @@
-const express = require("express");
-const path = require("path");
-const cors = require("cors");
-require("dotenv").config();
+import express from "express";
+import path from "path";
+import cors from "cors";
+import dotenv from "dotenv";
+
+dotenv.config();
 
 const app = express();
-const PORT = process.env.PORT || 8324;
-const FRONTEND_DIST = process.env.FRONTEND_DIST || "../frontend";
+const PORT: number = parseInt(process.env.PORT || "8324", 10);
+const FRONTEND_DIST: string = process.env.FRONTEND_DIST || "../frontend";
 
 // Import CORS middleware
-const corsMiddleware = require("./api/middleware/cors");
+import corsMiddleware from "./api/middleware/cors";
 
 // Apply CORS middleware
 app.use(corsMiddleware);
@@ -18,13 +20,14 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 // API routes
-app.use("/api", require("./api/routes"));
+import apiRoutes from "./api/routes";
+app.use("/api", apiRoutes);
 
 // Serve static files from frontend distribution folder
 app.use(express.static(path.resolve(__dirname, FRONTEND_DIST)));
 
 // Catch-all handler: send back frontend's index.html file for SPA routing
-app.get("*", (req, res) => {
+app.get("*", (req: express.Request, res: express.Response) => {
   res.sendFile(path.resolve(__dirname, FRONTEND_DIST, "index.html"));
 });
 

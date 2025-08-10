@@ -73,6 +73,7 @@ export const ContactContextProvider: React.FC<{ children: React.ReactNode }> = (
     }, [getAllHttp.response]);
 
     useEffect(() => {
+        console.log("Contacts updated:", contacts);
         // if contacts are an array and not empty, filter them
         const filtered = contacts.filter((c) =>
             Object.values(c).some((value) =>

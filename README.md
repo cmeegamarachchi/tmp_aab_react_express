@@ -1,178 +1,137 @@
-# AppSolve Application Blocks - Node.js Starter
+# Full Stack React + Express Application
 
-A comprehensive Node.js development starter template featuring a complete development environment using VS Code dev containers. This starter provides everything you need to quickly bootstrap a modern Node.js project with TypeScript support and best practices.
+A full stack application with React frontend and Express.js backend, designed to serve both API requests and the frontend SPA from a single server.
 
-## Features
+## Architecture
 
-- **Dev Container Ready**: Complete development environment using Docker
-- **Node.js 22**: Latest LTS version with npm pre-installed
-- **TypeScript Support**: TypeScript compiler pre-configured
-- **Code Formatting**: Prettier integration with auto-format on save
-- **Enhanced UI**: Material Icon Theme for better file recognition
-- **GitHub Copilot**: AI-powered code assistance
-- **ESLint**: Code linting for quality assurance
-- **REST Client**: Built-in HTTP client for API testing
-
-## Quick Start
-
-### Prerequisites
-
-- [Visual Studio Code](https://code.visualstudio.com/)
-- [Docker Desktop](https://www.docker.com/products/docker-desktop/)
-- [Dev Containers extension](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers)
-
-### Getting Started
-
-1. **Clone or use this template**:
-   ```bash
-   git clone https://github.com/cmeegamarachchi/aab_node
-   cd aab_node
-   ```
-
-2. **Open in VS Code**:
-   ```bash
-   code .
-   ```
-
-3. **Reopen in Container**:
-   - VS Code will detect the dev container configuration
-   - Click "Reopen in Container" when prompted
-   - Or use Command Palette (`Ctrl+Shift+P`) → "Dev Containers: Reopen in Container"
-
-4. **Start developing**:
-   - The container will automatically build with all dependencies
-   - Your development environment is ready to use!
-
-## Development Environment
-
-### Included Tools
-
-- **Node.js 22** - Latest LTS runtime
-- **npm** - Package manager
-- **TypeScript Compiler (tsc)** - For TypeScript compilation
-- **ESLint** - Code linting and quality checks
-- **Prettier** - Code formatting (width: 120 characters)
-- **Git** - Version control (built from source)
-
-### VS Code Extensions
-
-- **Prettier** - Code formatter with auto-format on save
-- **Material Icon Theme** - Enhanced file icons
-- **GitHub Copilot** - AI-powered code suggestions
-- **REST Client** - HTTP client for API testing
-
-### Formatting Configuration
-
-- **Print Width**: 120 characters
-- **Auto-format on save** for:
-  - TypeScript files
-  - JavaScript files
-  - JSON files
+- **Frontend**: React SPA built with Vite
+- **Backend**: Node.js Express server
+- **Deployment**: Single server serves both API and frontend
 
 ## Project Structure
 
 ```
-aab_node/
-├── .devcontainer/
-│   ├── devcontainer.json    # Dev container configuration
-│   └── Dockerfile          # Container image definition
-└── README.md               # This file
+├── frontend/           # React application
+├── server/            # Express server
+│   ├── index.js       # Main server file
+│   ├── api/
+│   │   ├── routes.js  # Dynamic route loader
+│   │   ├── middleware/
+│   │   │   └── cors.js # CORS configuration
+│   │   └── handlers/  # API route handlers
+│   └── package.json
+├── scripts/           # Build scripts
+├── dist/             # Build output (created after build)
+│   ├── frontend/     # Built React app
+│   └── api/         # Built server
+└── build.sh         # Master build script
 ```
 
-## Available Commands
+## Server Features
 
-Since this is a starter template, you'll need to add your own `package.json` and scripts. Here are some common commands you might want to add:
+### 1. **Dual Purpose Server**
+- Serves API requests at `/api/*`
+- Serves frontend SPA for all other routes (`/`)
+- Uses `FRONTEND_DIST` environment variable (default: `dist/frontend`)
 
-```bash
-# Initialize your project
-npm init -y
+### 2. **Modular API Handlers**
+- Each API method is a separate module in `server/api/handlers/`
+- Handlers export route, method, and handler function
+- Routes are automatically loaded and registered
 
-# Install dependencies
-npm install
+### 3. **CORS Middleware**
+- Configured in `server/api/middleware/cors.js`
+- Supports environment-based configuration
 
-# Add TypeScript configuration
-npx tsc --init
+## API Handler Example
 
-# Install common development dependencies
-npm install -D typescript @types/node eslint prettier
-
-# Run your application
-npm start
-
-# Build TypeScript
-npm run build
-
-# Run tests
-npm test
-
-# Lint code
-npm run lint
-
-# Format code
-npm run format
-```
-
-## Customization
-
-### Adding Dependencies
-
-Install packages as you normally would:
-```bash
-npm install express
-npm install -D @types/express
-```
-
-### Modifying Dev Container
-
-Edit [.devcontainer/devcontainer.json](.devcontainer/devcontainer.json) to:
-- Add port forwarding for your application
-- Install additional VS Code extensions
-- Modify container settings
-- Add environment variables
-
-### Adding Scripts
-
-Create or modify `package.json` to add your build, test, and run scripts:
-
-```json
-{
-  "scripts": {
-    "start": "node dist/index.js",
-    "build": "tsc",
-    "dev": "ts-node src/index.ts",
-    "test": "jest",
-    "lint": "eslint src/**/*.ts",
-    "format": "prettier --write src/**/*.ts"
+```javascript
+// server/api/handlers/users.js
+module.exports = {
+  route: '/users',
+  method: 'GET',
+  handler: (req, res) => {
+    res.json({ success: true, data: [] });
   }
-}
+};
 ```
 
-## Browser Integration
+## Environment Variables
 
-Open web pages in your host's default browser:
 ```bash
-"$BROWSER" http://localhost:3000
+PORT=8324                    # Server port
+FRONTEND_DIST=dist/frontend  # Frontend distribution path
+CORS_ORIGIN=*               # CORS origin configuration
 ```
 
-## Contributing
+## Build & Run
 
-1. Fork the repository
-2. Create a feature branch
-3. Make your changes
-4. Test your changes
-5. Submit a pull request
+### Quick Start
+```bash
+# Build everything
+./build.sh
 
-## License
+# Run the server
+cd dist/api && npm start
+```
 
-This project is open source. Please add your preferred license.
+### Individual Builds
+```bash
+# Build frontend only
+./scripts/build-frontend.sh
 
-## Support
+# Build API only
+./scripts/build-api.sh
+```
 
-For issues and questions:
-- Check the [VS Code Dev Containers documentation](https://code.visualstudio.com/docs/devcontainers/containers)
-- Review the [Node.js documentation](https://nodejs.org/docs/)
-- Check [TypeScript documentation](https://www.typescriptlang.org/docs/)
+### Development
+```bash
+# Frontend development
+cd frontend && npm run dev
 
----
+# Server development
+cd server && npm run dev
+```
 
-**Happy coding!**
+## API Endpoints
+
+- `GET /api/health` - Health check
+- `GET /api/users` - Get users
+- `POST /api/users` - Create user
+- `DELETE /api/users/:id` - Delete user
+
+## Custom Environment Variables
+
+Set `FRONTEND_DIST` to customize where the frontend is served from:
+
+```bash
+export FRONTEND_DIST="custom/frontend/path"
+./scripts/build-frontend.sh
+```
+
+## Adding New API Handlers
+
+1. Create a new file in `server/api/handlers/`
+2. Export route, method, and handler function
+3. The route will be automatically loaded
+
+Example:
+```javascript
+// server/api/handlers/products.js
+module.exports = {
+  route: '/products',
+  method: 'GET',
+  handler: (req, res) => {
+    res.json({ products: [] });
+  }
+};
+```
+
+## Production Deployment
+
+1. Build the application: `./build.sh`
+2. Deploy the `dist/api` folder to your server
+3. Set environment variables
+4. Run: `npm start`
+
+The server will serve your React app and handle API requests on the same port.

@@ -33,6 +33,27 @@ const handlers: RouteHandler[] = [
     },
   },
   {
+    route: "/customers/:id",
+    method: "PUT",
+    handler: (req: Request<{ id: string }>, res: Response): void => {
+      const customer = customers.find((c) => c.id === req.params.id);
+      if (!customer) {
+        res.status(404).json({ success: false, error: "Customer not found" });
+        return;
+      }
+      const { first_name, last_name, email, street_address, city, country, signed_on_date } = req.body;
+      if (!first_name || !last_name || !email || !street_address || !city || !country || !signed_on_date) {
+        res.status(400).json({
+          success: false,
+          error: "All fields are required",
+        });
+        return;
+      }
+      Object.assign(customer, req.body);
+      res.json({ success: true, data: customer });
+    },
+  },
+  {
     route: "/customers",
     method: "POST",
     handler: (req: Request<{}, {}, CreateCustomerRequest>, res: Response): void => {
